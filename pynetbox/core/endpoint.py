@@ -77,6 +77,9 @@ class Endpoint(object):
         """Queries the 'ListView' of a given endpoint.
 
         Returns all objects from an endpoint.
+        
+        Note that you can iterate over a result set only once, see the
+        'filter' method for more information.
 
         :arg int,optional limit: Overrides the max page size on
             paginated returns.
@@ -179,13 +182,22 @@ class Endpoint(object):
         Takes named arguments that match the usable filters on a
         given endpoint. If an argument is passed then it's used as a
         freeform search argument if the endpoint supports it.
+        
+        Note that you can iterate over a result set only once, and it will
+        fetch only as many records as specified in the 'limit' argument.  You 
+        can re-initialise the result set (to iterate over it from the 
+        beginning) by calling filter() again.  You can also save the results 
+        in a list as demonstrated below, which will get all the records in 
+        the result set from the server in one operation.
 
         :arg str,optional \*args: Freeform search string that's
             accepted on given endpoint.
         :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
         :arg int,optional limit: Overrides the max page size on
-            paginated returns.
+            paginated returns.  The page size determines the number of records
+            that will be fetched with each request to the server.  The record set
+            
         :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
@@ -233,6 +245,11 @@ class Endpoint(object):
         test1-a3-spine2
         test1-a3-leaf1
         >>>
+        
+        To encapsulate the results in a list.
+
+        >>> devices = list(nb.dcim.devices.filter(role='leaf-switch'))
+        
         """
 
         if args:
